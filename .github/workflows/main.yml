@@ -43,7 +43,7 @@ jobs:
       
       # Run reasoner
       - name: Run reasoner
-        run: echo "ReasonerResult=$(.\openlletcli\bin\openllet.bat consistency)" >> $GITHUB_ENV
+        run: echo "ReasonerResult=$(.\openlletcli\bin\openllet.bat consistency DIN8580.owl)" >> $GITHUB_ENV
         
       # Test reasoner output
       - name: Test reasoner result
