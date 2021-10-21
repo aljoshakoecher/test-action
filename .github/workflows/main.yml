@@ -36,8 +36,9 @@ jobs:
       - name: Extract reasoner zip
         run: |
           unzip openlletcli.zip
+          echo "ls output"
           ls
-          cd bin
+          cd openlletcli/bin
 
       # Run reasoner
       - name: Run a one-line script
