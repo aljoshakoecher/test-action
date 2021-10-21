@@ -44,16 +44,16 @@ jobs:
           chmod +x ./openlletcli/bin/openllet
       
       # Run reasoner
-      - name: Run reasoner
-        run: echo "reasoner_result=$(./openlletcli/bin/openllet consistency DIN8580.owl)" >> $GITHUB_ENV
+      #- name: Run reasoner
+      #  run: echo "reasoner_result=$(./openlletcli/bin/openllet consistency DIN8580.owl)" >> $GITHUB_ENV
         
       # Test reasoner output
-      - name: Test reasoner result
-        run: echo "$GITHUB_ENV"
+      #- name: Test reasoner result
+      #  run: echo "$GITHUB_ENV"
       
       #Check reasoner result
       - name: Check reasoner result
-        if: ${{env.ReasonerResult == 'Consistent:No'}}
+        if: ${{./openlletcli/bin/openllet consistency DIN8580.owl == 'Consistent:No'}}
         uses: actions/github-script@v3
         with:
           script: |
