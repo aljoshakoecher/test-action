@@ -35,7 +35,11 @@ jobs:
       # Extract zip
       - name: Extract reasoner zip
         run: unzip openlletcli.zip
-
+  
+      # Get bin folder content
+      - name: Get bin folder content
+        run: ls -a openllet/bin
+    
       # Run reasoner
-      - name: Run a one-line script
+      - name: Run reasoner
         run: ./openllet/bin/openllet consistency DIN8580.owl
