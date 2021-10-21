@@ -41,7 +41,7 @@ jobs:
       - name: Extract reasoner zip
         run: |
           unzip openlletcli.zip
-          chmod +x .\openlletcli\bin\openllet
+          chmod +x ./openlletcli/bin/openllet
       
       # Run reasoner
       - name: Run reasoner
