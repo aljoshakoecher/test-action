@@ -618,7 +618,6 @@ DIN 8593-1</rdfs:comment>
     <!-- http://www.hsu-ifa.de/ontologies/DIN8580#Fertigungsverfahren -->
 
     <owl:Class rdf:about="http://www.hsu-ifa.de/ontologies/DIN8580#Fertigungsverfahren">
-        <owl:disjointWith rdf:resource="http://www.hsu-ifa.de/ontologies/DIN8580#Urformen"/>
         <rdfs:comment>alle Verfahren zur Herstellung von geometrisch bestimmten festen Koerpern; 
 sie schliessen die Verfahren zur Gewinnung erster Formen aus dem formlosen Zustand, zur Veraenderung dieser Form sowie zur Veraenderung der Stoffeigenschaften ein</rdfs:comment>
     </owl:Class>
@@ -1948,25 +1947,6 @@ DIN 8585-1</rdfs:comment>
         <rdfs:comment>Gruppe 4.1
 DIN 8593-1</rdfs:comment>
     </owl:Class>
-    
-
-
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Individuals
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
-
-    
-
-
-    <!-- http://www.hsu-ifa.de/ontologies/DIN8580#myUrformen -->
-
-    <owl:NamedIndividual rdf:about="http://www.hsu-ifa.de/ontologies/DIN8580#myUrformen">
-        <rdf:type rdf:resource="http://www.hsu-ifa.de/ontologies/DIN8580#Urformen"/>
-    </owl:NamedIndividual>
     
 
 
