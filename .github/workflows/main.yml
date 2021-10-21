@@ -59,7 +59,7 @@ jobs:
       
       #Check reasoner result
       - name: Check reasoner result
-        if: ${{ steps.run_reasoner.outputs.result == 'Consistent:%20No'}}
+        if: ${{contains(steps.run_reasoner.outputs.result, 'Consistent:%20No')}}
         uses: actions/github-script@v3
         with:
           script: |
