@@ -38,13 +38,13 @@ jobs:
       #      DIN8580.owl
       
       # Upload reasoner folder
-      #- name: Archive production artifacts
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: reasoner
-      #    path: |
-      #      openlletcli
-      #      DIN8580.owl
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: reasoner
+          path: |
+            openlletcli
+            DIN8580.owl
       
       # Run reasoner
       - name: Run reasoner
@@ -60,10 +60,14 @@ jobs:
       - name: Test reasoner result
         run: echo "${{steps.run_reasoner.outputs.result}}"
       
-      #Check reasoner result
+      # Check reasoner result -> negative feedback if inconsistent
       - name: Check reasoner result
         if: ${{contains(steps.run_reasoner.outputs.result, 'Consistent:%20No')}}
         uses: actions/github-script@v3
         with:
           script: |
               core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+              
+      # Positive feedback if consistent
+      - name: Give positive feedback
+        run: echo "Your Ontology is consistent and may be merged."
