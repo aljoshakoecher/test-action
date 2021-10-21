@@ -43,4 +43,16 @@ jobs:
       
       # Run reasoner
       - name: Run reasoner
-        run: ./openlletcli/bin/openllet.bat consistency DIN8580.owl
+        run: echo "ReasonerResult=$(.\openlletcli\bin\openllet.bat consistency)" >> $GITHUB_ENV
+        
+      # Test reasoner output
+      - name: Test reasoner result
+        run: echo ${{env.ReasonerResult}}
+      
+      #Check reasoner result
+      - name: Check reasoner result
+        if: ${{env.ReasonerResult == 'Consistent:No'}}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
