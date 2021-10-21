@@ -36,9 +36,11 @@ jobs:
       - name: Extract reasoner zip
         run: unzip openlletcli.zip
   
-      # Get bin folder content
-      - name: Get bin folder content
-        run: ls -a openllet/bin
+      # Get current and bin folder content
+      - name: Get current and bin folder content
+        run: |
+          ls -a
+          ls -a openllet/bin
     
       # Run reasoner
       - name: Run reasoner
