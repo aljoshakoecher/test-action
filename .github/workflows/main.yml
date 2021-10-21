@@ -47,7 +47,7 @@ jobs:
         
       # Test reasoner output
       - name: Test reasoner result
-        run: echo ${{env.ReasonerResult}}
+        run: echo "$env.ReasonerResult"
       
       #Check reasoner result
       - name: Check reasoner result
