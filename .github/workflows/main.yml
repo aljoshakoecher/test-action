@@ -40,8 +40,8 @@ jobs:
       - name: Get current and bin folder content
         run: |
           ls -a
-          ls -a openllet/bin
+          ls -a openlletcli/bin
     
       # Run reasoner
       - name: Run reasoner
-        run: ./openllet/bin/openllet consistency DIN8580.owl
+        run: ./openlletcli/bin/openllet consistency DIN8580.owl
