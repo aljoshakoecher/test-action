@@ -16,7 +16,7 @@ jobs:
   # This workflow contains a single job called "build"
   check-consistency:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -35,13 +35,7 @@ jobs:
       # Extract zip
       - name: Extract reasoner zip
         run: unzip openlletcli.zip
-  
-      # Get current and bin folder content
-      - name: Get current and bin folder content
-        run: |
-          ls -a
-          ls -a openlletcli/bin
-    
+      
       # Run reasoner
       - name: Run reasoner
-        run: ./openlletcli/bin/openllet consistency DIN8580.owl
+        run: ./openlletcli/bin/openllet.bat consistency DIN8580.owl
