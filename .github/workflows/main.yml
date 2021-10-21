@@ -48,17 +48,18 @@ jobs:
         id: run_reasoner
         run: |
           reasoner_result="$(./openlletcli/bin/openllet consistency DIN8580.owl)"
+          reasoner_result="${reasoner_result//$' '/'%20'}"
           reasoner_result="${reasoner_result//$'\n'/'%0A'}"
           reasoner_result="${reasoner_result//$'\r'/'%0D'}"
           echo "::set-output name=result::$reasoner_result"
         
       # Test reasoner output
-      #- name: Test reasoner result
-      #  run: echo "$GITHUB_ENV"
+      - name: Test reasoner result
+        run: echo "${{steps.run_reasoner.outputs.result}}"
       
       #Check reasoner result
       - name: Check reasoner result
-        if: ${{ steps.run_reasoner.outputs.result == 'Consistent:No'}}
+        if: ${{ steps.run_reasoner.outputs.result == 'Consistent:%20No'}}
         uses: actions/github-script@v3
         with:
           script: |
