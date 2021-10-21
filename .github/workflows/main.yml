@@ -50,7 +50,7 @@ jobs:
           reasoner_result="$(./openlletcli/bin/openllet consistency DIN8580.owl)"
           reasoner_result="${reasoner_result//$'\n'/'%0A'}"
           reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-          echo "::set-output result=content::$reasoner_result"
+          echo "::set-output name=result::$reasoner_result"
         
       # Test reasoner output
       #- name: Test reasoner result
