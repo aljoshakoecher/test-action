@@ -62,7 +62,7 @@ jobs:
               echo "$reasoner_result"
               #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
               #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-              resultArr=()
+              resultArr=("Apple" "Banana")
               if [[ $reasoner_result == *"Consistent: No"* ]]; then
                 echo "is inconsistent"
                 resultArr+=("inconsistent")
