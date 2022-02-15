@@ -5,7 +5,10 @@ name: Check Ontology Consistency
 on:
   # Triggered by PRs to develop
   pull_request:
-    branches: [ develop ]
+    types:
+      - opened
+    paths:
+      - '**.owl'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
