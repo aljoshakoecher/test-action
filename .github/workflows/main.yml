@@ -59,7 +59,7 @@ jobs:
           for f in $FILES 
           do 
             echo "file $f"
-            if contains($f, '.owl')
+            if contains($f, '.owl') then
               echo "is owl: $f'
               reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
             fi
