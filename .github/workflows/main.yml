@@ -58,12 +58,12 @@ jobs:
               echo "is owl: $f"
               reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
               echo "$reasoner_result"
-              reasoner_result="${reasoner_result//$' '/'%20'}"
-              reasoner_result="${reasoner_result//$'\n'/'%0A'}"
-              reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-              if contains(reasoner_result, 'Consistent:%20No')
-                core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
-              fi
+              #reasoner_result="${reasoner_result//$' '/'%20'}"
+              #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
+              #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
+              #if contains(reasoner_result, 'Consistent:%20No')
+              #  core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+              #fi
             else
               echo "no owl $f"
             fi
