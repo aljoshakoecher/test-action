@@ -59,7 +59,7 @@ jobs:
           #else
           #  echo "no json file changed!!"
           #fi
-          for f in $FILES;
+          for f in $FILES
           do 
             reasoner_result="$(./openlletcli/bin/openllet consistency $f)
             reasoner_result="${reasoner_result//$' '/'%20'}
@@ -68,7 +68,6 @@ jobs:
             if contains(reasoner_result, 'Consistent:%20No')
               core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
             fi
-          ; 
           done
       
       # Run reasoner
