@@ -47,7 +47,8 @@ jobs:
           path: openlletcli
       
       # Get changed files
-      - name: Get changed files
+      - name: Get files and check consistency
+        id: checkAllFiles
         run: |
           URL="https://api.github.com/repos/${{ github.repository }}/pulls/4/files"
           FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
@@ -57,14 +58,15 @@ jobs:
             if [[ $f == *".owl"* ]]; then
               echo "is owl: $f"
               reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
-              #reasoner_result="${reasoner_result//$' '/'%20'}"
+              reasoner_result="${reasoner_result//$' '/'%20'}"
               echo "$reasoner_result"
               #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
               #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
+              resultArr=()
               if [[ $reasoner_result == *"Consistent: No"* ]]; then
-              #if contains($reasoner_result, 'Consistent:%20No')
                 echo "is inconsistent"
-                core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+                resultArr+=$reasoner_result
+                core.setFailed("Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.")
               fi
             else
               echo "no owl $f"
@@ -75,6 +77,7 @@ jobs:
             #if contains(reasoner_result, 'Consistent:%20No')
             #  core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
             #fi
+            echo "::set-output name=result::$resultArr"
           done
       
       # Run reasoner
@@ -92,12 +95,12 @@ jobs:
       #  run: echo "${{steps.run_reasoner.outputs.result}}"
       
       # Check reasoner result -> negative feedback if inconsistent
-      #- name: Check reasoner result
-      #  if: ${{contains(steps.run_reasoner.outputs.result, 'Consistent:%20No')}}
-      #  uses: actions/github-script@v3
-      #  with:
-      #    script: |
-      #        core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+      - name: Check reasoner result
+        if: ${{contains(steps.checkAllFiles.outputs.result, 'Consistent:%20No')}}
+        uses: actions/github-script@v3
+        with:
+          script: |
+              core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
       - name: Give positive feedback
