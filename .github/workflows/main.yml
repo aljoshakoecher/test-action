@@ -100,8 +100,8 @@ jobs:
         uses: actions/github-script@v3
         with:
           script: |
-            echo "result"
-            echo ${{steps.checkAllFiles.outputs.result}}
+            console.log("result")
+            console.log(${{steps.checkAllFiles.outputs.result}})
             core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
