@@ -77,7 +77,7 @@ jobs:
             #if contains(reasoner_result, 'Consistent:%20No')
             #  core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
             #fi
-            echo "::set-output name=result::$resultArr"
+            echo "::set-output name=resultArr::$resultArr"
           done
       
       # Run reasoner
@@ -98,10 +98,13 @@ jobs:
       - name: Check reasoner result
         #if: ${{contains(steps.checkAllFiles.outputs.result, 'Consistent:%20No')}}
         uses: actions/github-script@v3
+        env:
+          resultArr: ${{steps.checkAllFiles.outputs.resultArr}}
         with:
           script: |
             console.log("result")
-            console.log(${{steps.checkAllFiles.outputs.result}})
+            const { resultArr } = process.env
+            console.log(resultArr)
             core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
