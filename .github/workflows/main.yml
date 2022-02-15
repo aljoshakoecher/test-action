@@ -1,10 +1,9 @@
-# This is a basic workflow to help you get started with Actions
-
+# A workflow to check for consistency of changed ontology files
 name: Check Ontology Consistency
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  # Triggered by PRs to develop
   pull_request:
     branches: [ develop ]
 
@@ -45,6 +44,17 @@ jobs:
           path: |
             openlletcli
             DIN8580.owl
+      
+      # Get changed files
+      - name: Get changed files
+        run: |
+          URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
+          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+          if echo $FILES | grep -q ".json"; then
+            echo "json file changed!!"
+          else
+            echo "no json file changed!!"
+          fi
       
       # Run reasoner
       - name: Run reasoner
