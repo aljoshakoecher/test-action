@@ -59,7 +59,7 @@ jobs:
               reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
               reasoner_result="${reasoner_result//$' '/'%20'}"
               echo "$reasoner_result"
-              reasoner_result="${reasoner_result//$'\n'/'%0A'}"
+              #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
               #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
               if contains(reasoner_result, 'Consistent:%20No')
                 echo "is inconsistent"
