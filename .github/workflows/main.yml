@@ -53,33 +53,44 @@ jobs:
         run: |
           URL="https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files"
           FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
-          if echo $FILES | grep -q ".json"; then
-            echo "json file changed!!"
-          else
-            echo "no json file changed!!"
-          fi
+          #if echo $FILES | grep -q ".json"; then
+          # echo "json file changed!!"
+          #else
+          #  echo "no json file changed!!"
+          #fi
+          for f in $FILES;
+          do 
+            reasoner_result="$(./openlletcli/bin/openllet consistency $f)
+            reasoner_result="${reasoner_result//$' '/'%20'}
+            reasoner_result="${reasoner_result//$'\n'/'%0A'}
+            reasoner_result="${reasoner_result//$'\r'/'%0D'}
+            if contains(reasoner_result, 'Consistent:%20No')
+              core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+            fi
+          ; 
+          done
       
       # Run reasoner
-      - name: Run reasoner
-        id: run_reasoner
-        run: |
-          reasoner_result="$(./openlletcli/bin/openllet consistency DIN8580.owl)"
-          reasoner_result="${reasoner_result//$' '/'%20'}"
-          reasoner_result="${reasoner_result//$'\n'/'%0A'}"
-          reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-          echo "::set-output name=result::$reasoner_result"
+      #- name: Run reasoner
+      #  id: run_reasoner
+      #  run: |
+      #    reasoner_result="$(./openlletcli/bin/openllet consistency DIN8580.owl)"
+      #    reasoner_result="${reasoner_result//$' '/'%20'}"
+      #    reasoner_result="${reasoner_result//$'\n'/'%0A'}"
+      #    reasoner_result="${reasoner_result//$'\r'/'%0D'}"
+      #    echo "::set-output name=result::$reasoner_result"
         
       # Test reasoner output
-      - name: Test reasoner result
-        run: echo "${{steps.run_reasoner.outputs.result}}"
+      #- name: Test reasoner result
+      #  run: echo "${{steps.run_reasoner.outputs.result}}"
       
       # Check reasoner result -> negative feedback if inconsistent
-      - name: Check reasoner result
-        if: ${{contains(steps.run_reasoner.outputs.result, 'Consistent:%20No')}}
-        uses: actions/github-script@v3
-        with:
-          script: |
-              core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+      #- name: Check reasoner result
+      #  if: ${{contains(steps.run_reasoner.outputs.result, 'Consistent:%20No')}}
+      #  uses: actions/github-script@v3
+      #  with:
+      #    script: |
+      #        core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
       - name: Give positive feedback
