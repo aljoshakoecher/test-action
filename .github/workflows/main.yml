@@ -44,9 +44,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: reasoner
-          path: |
-            openlletcli
-            DIN8580.owl
+          path: openlletcli
       
       # Get changed files
       - name: Get changed files
@@ -61,7 +59,10 @@ jobs:
           for f in $FILES 
           do 
             echo "file $f"
-            reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
+            if contains($f, '.owl')
+              echo "is owl: $f'
+              reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
+            fi
             #reasoner_result="${reasoner_result//$' '/'%20'}"
             #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
             #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
