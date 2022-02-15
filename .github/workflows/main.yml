@@ -96,11 +96,13 @@ jobs:
       
       # Check reasoner result -> negative feedback if inconsistent
       - name: Check reasoner result
-        if: ${{contains(steps.checkAllFiles.outputs.result, 'Consistent:%20No')}}
+        #if: ${{contains(steps.checkAllFiles.outputs.result, 'Consistent:%20No')}}
         uses: actions/github-script@v3
         with:
           script: |
-              core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+            echo "result"
+            echo ${{steps.checkAllFiles.outputs.result}}
+            core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
       - name: Give positive feedback
