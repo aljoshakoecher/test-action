@@ -55,8 +55,8 @@ jobs:
           do 
             echo "file $f"
             if [[ $f == *".owl"* ]]; then
-              echo "is owl: $f'
-              #reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
+              echo "is owl: $f"
+              reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
             else
               echo "no owl $f"
             fi
