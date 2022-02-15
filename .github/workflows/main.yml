@@ -61,7 +61,8 @@ jobs:
               echo "$reasoner_result"
               #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
               #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-              if contains(reasoner_result, 'Consistent:%20No')
+              if [[ $reasoner_result == *"Consistent:%20No"* ]]; then
+              #if contains($reasoner_result, 'Consistent:%20No')
                 echo "is inconsistent"
               #  core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               fi
