@@ -29,17 +29,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 14
-      
-      # Upload reasoner zip
-      #- name: Archive production artifacts
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: reasoner-zip
-      #    path: |
-      #      openlletcli.zip
-      #      DIN8580.owl
-      
-      # Upload reasoner folder
+          
+      # Upload reasoner
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -58,53 +49,33 @@ jobs:
             if [[ $f == *".owl"* ]]; then
               echo "is owl: $f"
               reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
-              reasoner_result="${reasoner_result//$' '/'%20'}"
+              #reasoner_result="${reasoner_result//$' '/'%20'}"
               echo "$reasoner_result"
               #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
               #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-              resultArr=("asd")
-              if [[ $reasoner_result == *"Consistent:%20No"* ]]; then
+              result="consistent"
+              if [[ $reasoner_result == *"Consistent: No"* ]]; then
                 echo "is inconsistent"
-                resultArr+=("inconsistent")
-                #core.setFailed("Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.")
+                result="inconsistent"
               fi
             else
               echo "no owl $f"
             fi
-            #reasoner_result="${reasoner_result//$' '/'%20'}"
-            #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
-            #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-            #if contains(reasoner_result, 'Consistent:%20No')
-            #  core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
-            #fi
-            echo "::set-output name=resultArr::$resultArr"
+            echo "::set-output name=result::$result"
           done
-      
-      # Run reasoner
-      #- name: Run reasoner
-      #  id: run_reasoner
-      #  run: |
-      #    reasoner_result="$(./openlletcli/bin/openllet consistency DIN8580.owl)"
-      #    reasoner_result="${reasoner_result//$' '/'%20'}"
-      #    reasoner_result="${reasoner_result//$'\n'/'%0A'}"
-      #    reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-      #    echo "::set-output name=result::$reasoner_result"
-        
-      # Test reasoner output
-      #- name: Test reasoner result
-      #  run: echo "${{steps.run_reasoner.outputs.result}}"
-      
+            
       # Check reasoner result -> negative feedback if inconsistent
       - name: Check reasoner result
         #if: ${{contains(steps.checkAllFiles.outputs.result, 'Consistent:%20No')}}
         uses: actions/github-script@v3
         env:
-          resultArr: ${{steps.checkAllFiles.outputs.resultArr}}
+          result: ${{steps.checkAllFiles.outputs.result}}
         with:
           script: |
             console.log("result")
-            const { resultArr } = process.env
-            console.log(resultArr)
+            const { result } = process.env
+            console.log("result:")
+            console.log(result)
             core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
