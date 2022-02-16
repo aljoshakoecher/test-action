@@ -25,7 +25,6 @@
 
     <owl:Class rdf:about="http://www.semanticweb.org/köcher/ontologies/2022/1/untitled-ontology-281#ClassA">
         <owl:equivalentClass rdf:resource="http://www.semanticweb.org/köcher/ontologies/2022/1/untitled-ontology-281#ClassB"/>
-        <owl:disjointWith rdf:resource="http://www.semanticweb.org/köcher/ontologies/2022/1/untitled-ontology-281#ClassB"/>
     </owl:Class>
     
 
