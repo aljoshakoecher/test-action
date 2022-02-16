@@ -1,12 +1,14 @@
-# This is a basic workflow to help you get started with Actions
-
+# A workflow to check for consistency of changed ontology files
 name: Check Ontology Consistency
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+  # Triggered by PRs to develop
   pull_request:
-    branches: [ develop ]
+    types:
+      - opened
+    paths:
+      - '**.owl'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,50 +25,45 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
+      # Setup a JVM
       - name: Set up JDK 14
         uses: actions/setup-java@v1
         with:
           java-version: 14
-      
-      # Upload reasoner zip
-      #- name: Archive production artifacts
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: reasoner-zip
-      #    path: |
-      #      openlletcli.zip
-      #      DIN8580.owl
-      
-      # Upload reasoner folder
+          
+      # Upload reasoner
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
           name: reasoner
-          path: |
-            openlletcli
-            DIN8580.owl
+          path: openlletcli
       
-      # Run reasoner
-      - name: Run reasoner
-        id: run_reasoner
+      # Get changed files and run reasoner
+      - name: Get files and check consistency
+        id: checkAllFiles
         run: |
-          reasoner_result="$(./openlletcli/bin/openllet consistency DIN8580.owl)"
-          reasoner_result="${reasoner_result//$' '/'%20'}"
-          reasoner_result="${reasoner_result//$'\n'/'%0A'}"
-          reasoner_result="${reasoner_result//$'\r'/'%0D'}"
-          echo "::set-output name=result::$reasoner_result"
-        
-      # Test reasoner output
-      - name: Test reasoner result
-        run: echo "${{steps.run_reasoner.outputs.result}}"
-      
+          URL="https://api.github.com/repos/${{github.repository}}/pulls/${{github.event.pull_request.number}}/files"
+          FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
+          for f in $FILES 
+          do 
+            if [[ $f == *".owl"* ]]; then
+              reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
+              result="consistent"
+              if [[ $reasoner_result == *"Consistent: No"* ]]; then
+                result="inconsistent"
+              fi
+            else
+              echo "no owl $f"
+            fi
+            echo "::set-output name=result::$result"
+          done
+            
       # Check reasoner result -> negative feedback if inconsistent
       - name: Check reasoner result
-        if: ${{contains(steps.run_reasoner.outputs.result, 'Consistent:%20No')}}
+        if: ${{contains(steps.checkAllFiles.outputs.result, 'inconsistent')}}
         uses: actions/github-script@v3
         with:
-          script: |
-              core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+          script: core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
       - name: Give positive feedback
