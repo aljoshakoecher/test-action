@@ -25,6 +25,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
+      # Setup a JVM
       - name: Set up JDK 14
         uses: actions/setup-java@v1
         with:
@@ -37,25 +38,18 @@ jobs:
           name: reasoner
           path: openlletcli
       
-      # Get changed files
+      # Get changed files and run reasoner
       - name: Get files and check consistency
         id: checkAllFiles
         run: |
-          URL="https://api.github.com/repos/${{ github.repository }}/pulls/4/files"
+          URL="https://api.github.com/repos/${{github.repository}}/pulls/${{github.event.pull_request.number}}/files"
           FILES=$(curl -s -X GET -G $URL | jq -r '.[] | .filename')
           for f in $FILES 
           do 
-            echo "file $f"
             if [[ $f == *".owl"* ]]; then
-              echo "is owl: $f"
               reasoner_result="$(./openlletcli/bin/openllet consistency $f)"
-              #reasoner_result="${reasoner_result//$' '/'%20'}"
-              echo "$reasoner_result"
-              #reasoner_result="${reasoner_result//$'\n'/'%0A'}"
-              #reasoner_result="${reasoner_result//$'\r'/'%0D'}"
               result="consistent"
               if [[ $reasoner_result == *"Consistent: No"* ]]; then
-                echo "is inconsistent"
                 result="inconsistent"
               fi
             else
@@ -66,17 +60,10 @@ jobs:
             
       # Check reasoner result -> negative feedback if inconsistent
       - name: Check reasoner result
-        #if: ${{contains(steps.checkAllFiles.outputs.result, 'Consistent:%20No')}}
+        if: ${{contains(steps.checkAllFiles.outputs.result, 'inconsistent')}}
         uses: actions/github-script@v3
-        env:
-          result: ${{steps.checkAllFiles.outputs.result}}
         with:
-          script: |
-            console.log("result")
-            const { result } = process.env
-            console.log("result:")
-            console.log(result)
-            core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
+          script: core.setFailed('Your ontology is inconsistent. Please make sure to fix inconsistencies before merging.')
               
       # Positive feedback if consistent
       - name: Give positive feedback
